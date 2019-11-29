@@ -23,11 +23,25 @@ gem 'puma', '~> 3.11'
 gem 'bootsnap', '>= 1.4.2', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
+gem 'rack-cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # A library for generating fake data such as names, addresses, and phone numbers.
+  gem 'faker', '~> 1.8'
+  # RSpec for Rails-3+
+  gem 'rspec-rails', '~> 3.8.0'
+  # A gem providing "time travel", "time freezing", and "time acceleration"
+  # capabilities, making it simple to test time-dependent code. It provides
+  # a unified method to mock Time.now, Date.today, and DateTime.now in a single call.
+  gem 'timecop', '~> 0.9.1'
+  # Factory Girl Rails
+  gem 'factory_bot_rails', '~> 5.0.0'
+  # A Ruby gem to load environment variables from `.env`.
+  gem 'dotenv-rails', '~> 2.7.0'
+  # help to kill N+1 queries and unused eager loading
+  gem 'bullet', '~> 6.0.0'
 end
 
 group :development do
@@ -35,7 +49,27 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  # Annotate Rails classes with schema and routes info
+  gem 'annotate', '~> 2.7.0'
+  # Seedbank gives your seed data a little structure.
+  gem 'seedbank', '~> 0.5.0'
+end
+
+group :test do
+  # Strategies for cleaning databases in Ruby. Can be used to ensure a clean state for testing.
+  gem 'database_cleaner', '~> 1.6'
+  # Collection of testing matchers extracted from Shoulda
+  gem 'shoulda-matchers', '~> 4.1.0'
+  # Brings back `assigns` and `assert_template` to your Rails tests
+  gem 'rails-controller-testing', '~> 1.0.0'
+  # Code style checking for RSpec files
+  gem 'rubocop-rspec', '~> 1.34.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+
+## Background jobs
+gem 'sidekiq', '~> 5.2.0'
+gem 'sidekiq-cron', '~> 1.1.0'
