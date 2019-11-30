@@ -29,15 +29,15 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # A library for generating fake data such as names, addresses, and phone numbers.
-  gem 'faker', '~> 1.8'
+  gem 'faker', '~> 2.7'
   # RSpec for Rails-3+
-  gem 'rspec-rails', '~> 3.8.0'
+  gem 'rspec-rails', '~> 3.9.0'
   # A gem providing "time travel", "time freezing", and "time acceleration"
   # capabilities, making it simple to test time-dependent code. It provides
   # a unified method to mock Time.now, Date.today, and DateTime.now in a single call.
   gem 'timecop', '~> 0.9.1'
   # Factory Girl Rails
-  gem 'factory_bot_rails', '~> 5.0.0'
+  gem 'factory_bot_rails', '~> 5.1.0'
   # A Ruby gem to load environment variables from `.env`.
   gem 'dotenv-rails', '~> 2.7.0'
   # help to kill N+1 queries and unused eager loading
@@ -50,7 +50,7 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   # Annotate Rails classes with schema and routes info
-  gem 'annotate', '~> 2.7.0'
+  gem 'annotate', '~> 3.0.0'
   # Seedbank gives your seed data a little structure.
   gem 'seedbank', '~> 0.5.0'
 end
@@ -63,7 +63,7 @@ group :test do
   # Brings back `assigns` and `assert_template` to your Rails tests
   gem 'rails-controller-testing', '~> 1.0.0'
   # Code style checking for RSpec files
-  gem 'rubocop-rspec', '~> 1.34.0'
+  gem 'rubocop-rspec', '~> 1.37.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -71,5 +71,14 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 
 ## Background jobs
-gem 'sidekiq', '~> 5.2.0'
-gem 'sidekiq-cron', '~> 1.1.0'
+# Simple, efficient background processing for Ruby
+gem 'sidekiq', '~> 6.0.3'
+
+## State machines
+# State machines for Ruby classes (plain Ruby, ActiveRecord, Mongoid)
+gem 'aasm', '~> 5.0.0'
+
+
+## Others
+# An email validator for Rails
+gem 'email_validator', '~> 2.0.1'
