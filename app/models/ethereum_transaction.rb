@@ -1,0 +1,3 @@
+class EthereumTransaction < Transaction
+
+end

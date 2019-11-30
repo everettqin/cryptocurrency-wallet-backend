@@ -1,0 +1,3 @@
+class BitcoinTransaction < Transaction
+
+end
