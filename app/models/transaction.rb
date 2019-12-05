@@ -23,14 +23,97 @@
 
 class Transaction < ApplicationRecord
 
-  # Settings
-  alias identifier id
+  ## modules
+  include AASM
+  extend Enumerize
 
-  # Associations
+  ## Settings
+  alias identifier id
+  has_paper_trail
+  enumerize :currency_type, in: [:bitcoin, :ethereum]
+
+  ## Associations
   belongs_to :source_user, class_name: 'User'
   belongs_to :target_user, class_name: 'User'
 
-  # Validations
-  validates :amount, presence: true, length: {minimum: 0}
+  ## Validations
+  validates :amount, presence: true, numericality: {greater_than: 0}
+  validates :currency_type, presence: true
+  validate :validate_unequal_user,
+           :validate_enough_balance,
+           :validate_existed_source_user_wallet,
+           :validate_existed_target_user_wallet,
+           unless: -> { source_user.nil? || target_user.nil? || amount.nil? || currency_type.nil? }
 
+  ## Callbacks
+  after_create :process_begin
+
+  ## state machine
+  aasm column: :state do
+    state :awaiting, initial: true
+    state :processing, :processed, :failed
+
+    event :process_begin do
+      transitions from: :awaiting, to: :processing, after: :add_to_process_queue
+    end
+
+    event :process_successful do
+      transitions from: :processing, to: :processed
+    end
+
+    event :process_failure do
+      transitions from: :processing, to: :failed
+    end
+  end
+
+  def transfer!
+    source_user["#{currency_type}_wallet_balance"] =
+      source_user["#{currency_type}_wallet_balance"] - amount
+    target_user["#{currency_type}_wallet_balance"] =
+      target_user["#{currency_type}_wallet_balance"] + amount
+
+    ActiveRecord::Base.transaction do
+      begin
+        source_user.save!
+        target_user.save!
+        return true
+      rescue ActiveRecord::StatementInvalid
+        return false
+      end
+    end
+  end
+
+  private
+
+  def add_to_process_queue
+    TransactionsProcessJob.perform_later self
+  end
+
+  def validate_unequal_user
+    if source_user_id == target_user_id
+      errors.add(:target_user_id, "can't be same with source user id")
+    end
+  end
+
+  def validate_existed_source_user_wallet
+    source_user_wallet = source_user.attributes["#{currency_type}_wallet_id"]
+    if source_user_wallet.nil?
+      errors.add(:source_user, "have not #{currency_type} wallet")
+    end
+  end
+
+  def validate_existed_target_user_wallet
+    target_user_wallet = target_user.attributes["#{currency_type}_wallet_id"]
+    if target_user_wallet.nil?
+      errors.add(:target_user, "have not #{currency_type} wallet")
+    end
+  end
+
+  def validate_enough_balance
+    current_balance = source_user.attributes["#{currency_type}_wallet_balance"]
+    if amount > current_balance
+      errors.add(:amount,
+                 "can't be greater than current #{currency_type} wallet balance")
+    end
+  end
 end

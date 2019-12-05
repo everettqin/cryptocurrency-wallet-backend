@@ -21,8 +21,13 @@ Bundler.require(*Rails.groups)
 
 module CryptocurrencyWalletBackend
   class Application < Rails::Application
+    # Use the responders controller from the responders gem
+    config.app_generators.scaffold_controller :responders_controller
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
+
+    config.active_job.queue_adapter = :sidekiq
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -33,6 +38,9 @@ module CryptocurrencyWalletBackend
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    config.autoload_paths << Rails.root.join("lib")
+    config.eager_load_paths << Rails.root.join("lib")
 
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid

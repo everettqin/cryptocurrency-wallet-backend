@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_29_111548) do
+ActiveRecord::Schema.define(version: 2019_12_05_154532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -18,29 +18,29 @@ ActiveRecord::Schema.define(version: 2019_11_29_111548) do
   enable_extension "plpgsql"
 
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.decimal "amount"
-    t.string "type"
+    t.decimal "amount", default: "0.0", null: false
+    t.string "currency_type", default: ""
     t.string "state"
-    t.uuid "source_user_id"
-    t.uuid "target_user_id"
+    t.uuid "source_user_id", null: false
+    t.uuid "target_user_id", null: false
     t.datetime "processed_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["currency_type"], name: "index_transactions_on_currency_type"
     t.index ["processed_at"], name: "index_transactions_on_processed_at"
     t.index ["source_user_id"], name: "index_transactions_on_source_user_id"
     t.index ["state"], name: "index_transactions_on_state"
     t.index ["target_user_id"], name: "index_transactions_on_target_user_id"
-    t.index ["type"], name: "index_transactions_on_type"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.string "email"
-    t.string "bitcoin_wallet_id"
-    t.decimal "bitcoin_wallet_balance"
-    t.string "ethereum_wallet_id"
-    t.decimal "ethereum_wallet_balance"
+    t.uuid "bitcoin_wallet_id"
+    t.decimal "bitcoin_wallet_balance", default: "0.0", null: false
+    t.uuid "ethereum_wallet_id"
+    t.decimal "ethereum_wallet_balance", default: "0.0", null: false
     t.decimal "max_transaction_limit"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -48,6 +48,17 @@ ActiveRecord::Schema.define(version: 2019_11_29_111548) do
     t.index ["email"], name: "index_users_on_email"
     t.index ["ethereum_wallet_id"], name: "index_users_on_ethereum_wallet_id"
     t.index ["name"], name: "index_users_on_name"
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.bigint "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object"
+    t.datetime "created_at"
+    t.text "object_changes"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
 end
