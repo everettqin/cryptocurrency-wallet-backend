@@ -64,6 +64,8 @@ group :test do
   gem 'rails-controller-testing', '~> 1.0.0'
   # Code style checking for RSpec files
   gem 'rubocop-rspec', '~> 1.37.0'
+  # Automatically generate API documentation from RSpec
+  gem 'rspec_api_documentation', '~> 6.1.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -78,7 +80,20 @@ gem 'sidekiq', '~> 6.0.3'
 # State machines for Ruby classes (plain Ruby, ActiveRecord, Mongoid)
 gem 'aasm', '~> 5.0.0'
 
+## API
+# Simple, Fast, and Declarative Serialization Library for Ruby
+gem 'blueprinter', '~> 0.20.0'
+# Optimized JSON
+gem 'oj'
+# A set of Rails responders to dry up your application
+gem 'responders', '~> 3.0.0'
+# A Scope & Engine based, clean, powerful, customizable and sophisticated paginator for Ruby webapps
+gem 'kaminari','~> 1.1.1'
 
 ## Others
 # An email validator for Rails
 gem 'email_validator', '~> 2.0.1'
+# Enumerated attributes with I18n and ActiveRecord/Mongoid support
+gem 'enumerize', '~> 2.3.1'
+gem 'paper_trail', '~> 10.3.0'
+

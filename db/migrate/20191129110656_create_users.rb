@@ -4,10 +4,10 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :name, index: true
       t.text :description
       t.string :email, index: true
-      t.string :bitcoin_wallet_id, index: true
-      t.decimal :bitcoin_wallet_balance
-      t.string :ethereum_wallet_id, index: true
-      t.decimal :ethereum_wallet_balance
+      t.uuid :bitcoin_wallet_id, index: true
+      t.decimal :bitcoin_wallet_balance, null: false, default: 0
+      t.uuid :ethereum_wallet_id, index: true
+      t.decimal :ethereum_wallet_balance, null: false, default: 0
       t.decimal :max_transaction_limit
 
       t.timestamps

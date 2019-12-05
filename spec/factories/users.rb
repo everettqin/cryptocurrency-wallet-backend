@@ -27,7 +27,9 @@ FactoryBot.define do
     name { Faker::Name.name }
     email { Faker::Internet.email }
     description { Faker::Lorem.paragraph }
-    bitcoin_wallet_id {Faker::Blockchain::Bitcoin.address}
-    ethereum_wallet_id {Faker::Blockchain::Ethereum.address}
+    bitcoin_wallet_id {SecureRandom.uuid}
+    bitcoin_wallet_balance {rand(1000..100_000)}
+    ethereum_wallet_id {SecureRandom.uuid}
+    ethereum_wallet_balance {rand(1000..100_000)}
   end
 end

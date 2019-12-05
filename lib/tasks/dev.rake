@@ -11,7 +11,6 @@ namespace :dev do
   @rebuild_tasks = Array.new
   @rebuild_tasks << 'dev:build'
   @rebuild_tasks << "db:seed:#{Rails.env}"
-  @rebuild_tasks << 'searchkick:reindex:all'
 
   task :build => @build_tasks
   task :rebuild => @rebuild_tasks

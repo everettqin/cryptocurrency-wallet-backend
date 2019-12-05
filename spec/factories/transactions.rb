@@ -23,9 +23,12 @@
 
 FactoryBot.define do
   factory :transaction do
-    amount { rand(1..10_000) }
+    amount { rand(1..100) }
+    currency_type { Transaction.currency_type.values.sample }
 
-    association :source_user, factory: :user
-    association :target_user, factory: :user
+    after(:build) do |transaction|
+      transaction.source_user = create(:user) if transaction.source_user.nil?
+      transaction.target_user = create(:user) if transaction.target_user.nil?
+    end
   end
 end

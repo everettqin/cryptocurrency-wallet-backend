@@ -28,7 +28,7 @@ RSpec.describe User, type: :model do
   let(:user) { build(:user) }
   subject { user }
 
-  describe '#validate' do
+  describe '#validations' do
     it 'name, max length is 512 characters' do
       valid_name = SecureRandom.hex(250)
       invalid_name = SecureRandom.hex(300)
@@ -66,9 +66,14 @@ RSpec.describe User, type: :model do
     end
 
     it 'Email, be a email' do
-      invalid_string ='test'
+      invalid_string = 'test'
       user.email = invalid_string
       expect(user).not_to be_valid
     end
+  end
+
+  describe '#identifier' do
+    let(:user) { create(:user) }
+    it { expect(user.identifier).to eq user.id }
   end
 end
