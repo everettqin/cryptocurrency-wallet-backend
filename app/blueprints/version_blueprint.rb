@@ -1,4 +1,4 @@
-class TransactionHistoryBlueprint < Blueprinter::Base
+class VersionBlueprint < Blueprinter::Base
 
   fields :id,
          :item_type,

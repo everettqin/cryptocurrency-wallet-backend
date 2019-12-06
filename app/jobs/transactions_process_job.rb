@@ -3,29 +3,25 @@ class TransactionsProcessJob < ApplicationJob
 
   def perform(transaction)
 
-    begin
-      transaction.validate_unequal_user
-      transaction.validate_existed_source_user_wallet
-      transaction.validate_existed_target_user_wallet
-      transaction.validate_existed_target_user_wallet
-    rescue ActiveRecord::StatementInvalid
-      perform_failure(transaction)
-      return
-    end
+    if transaction.validates_unequal_user ||
+      transaction.validates_source_user_wallet ||
+      transaction.validates_target_user_wallet ||
+      transaction.validates_enough_balance
 
-    unless transaction.transfer
-      perform_failure(transaction)
-      return
-    end
+      unless transaction.transfer!
+        perform_failure(transaction)
+        return
+      end
 
-    perform_successful(transaction)
+      perform_successful(transaction)
+    end
   end
 
   def perform_successful(transaction)
-    transaction.process_failure
+    transaction.process_successful!
   end
 
   def perform_failure(transaction)
-    transaction.process_successful
+    transaction.process_failure!
   end
 end

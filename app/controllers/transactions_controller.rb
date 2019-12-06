@@ -1,9 +1,13 @@
-class TransactionsController < ApplicationController
+class TransactionsController < APIController
 
-  before_action :set_transaction, only: [:show]
+  before_action :set_transaction, only: [:show, :history]
 
   def index
-    @transactions = Transaction.page page_params
+    @transactions = Transaction
+    unless params[:user_id].nil?
+      @transactions = @transactions.by_user(params[:user_id])
+    end
+    @transactions = @transactions.order(created_at: :desc).page page_params
     render json: TransactionBlueprint.render(@transactions,
                                              root: :data,
                                              meta: pagination_dict(@transactions))

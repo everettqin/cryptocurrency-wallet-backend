@@ -1,9 +1,9 @@
-class UsersController < ApplicationController
+class UsersController < APIController
 
   before_action :set_user, only: [:show, :update, :destroy]
 
   def index
-    @users = User.search(query_params).page page_params
+    @users = User.search(query_params).order(:name).page page_params
     render json: UserBlueprint.render(@users,
                                       root: :data,
                                       meta: pagination_dict(@users))

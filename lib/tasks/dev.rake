@@ -1,8 +1,11 @@
+require 'sidekiq/api'
+
 namespace :dev do
   desc 'Rebuild system'
   @build_tasks = Array.new
   @build_tasks << 'tmp:clear'
   @build_tasks << 'log:clear'
+  @build_tasks << 'clear_sidekiq'
   @build_tasks << 'db:drop'
   @build_tasks << 'dev:clear_uploads'
   @build_tasks << 'db:create'
@@ -17,5 +20,9 @@ namespace :dev do
 
   task :clear_uploads do
     FileUtils.rm_rf(Dir.glob("#{Rails.root}/storage"))
+  end
+
+  task :clear_sidekiq do
+    Sidekiq.redis { |r| puts r.flushall }
   end
 end
