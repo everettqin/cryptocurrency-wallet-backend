@@ -6,9 +6,12 @@ resource 'Transactions' do
   explanation 'Transactions resource'
 
   let!(:transactions) { create_list :transaction, 5 }
+  let!(:administrator) { create :administrator }
 
   get '/transactions' do
     example 'Get list of transactions' do
+      sign_in(:administrator)
+
       do_request
 
       expect(status).to eq 200
@@ -23,6 +26,8 @@ resource 'Transactions' do
       let(:id) { transactions.first.identifier }
 
       example 'Getting a transaction by id' do
+        sign_in(:administrator)
+
         do_request
 
         expect(status).to eq(200)
@@ -33,6 +38,7 @@ resource 'Transactions' do
 
     include_context '404' do
       let(:id) { 0 }
+      let!(:auth) { :administrator }
     end
   end
 
@@ -48,6 +54,7 @@ resource 'Transactions' do
       end
 
       example 'Create a new transaction' do
+        sign_in(:administrator)
 
         users = create_pair(:user)
 

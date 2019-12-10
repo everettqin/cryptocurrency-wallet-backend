@@ -14,18 +14,28 @@ class UsersController < APIController
   end
 
   def update
-    @user.update(user_params)
-    respond_with @user
+    if @user.update(user_params)
+      render json: UserBlueprint.render(@user, root: :data), status: :accepted
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
   end
 
   def create
-    @user = User.create(user_params)
-    respond_with @user
+    @user = User.new(user_params)
+    if @user.save
+      render json: UserBlueprint.render(@user, root: :data), status: :created
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
   end
 
-  def destroy
-    @user.destroy
-    respond_with @user
+  def validate_email
+    if User.where(email: params[:email]).exists?
+      render json: {validated: false}
+    else
+      render json: {validated: true}
+    end
   end
 
   private

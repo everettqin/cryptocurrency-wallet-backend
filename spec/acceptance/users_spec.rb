@@ -6,9 +6,12 @@ resource 'Users' do
   explanation 'Users resource'
 
   let!(:users) { create_list :user, 5 }
+  let(:administrator) { create :administrator }
 
   get '/users' do
     example 'Get list of users' do
+      sign_in(:administrator)
+
       do_request
 
       expect(status).to eq 200
@@ -23,6 +26,8 @@ resource 'Users' do
       let(:id) { users.first.identifier }
 
       example 'Getting a user by id' do
+        sign_in(:administrator)
+
         do_request
 
         expect(status).to eq(200)
@@ -33,6 +38,7 @@ resource 'Users' do
 
     include_context '404' do
       let(:id) { 0 }
+      let(:auth) { :administrator }
     end
   end
 
@@ -47,6 +53,7 @@ resource 'Users' do
       end
 
       example 'Create a new user' do
+        sign_in(:administrator)
 
         request = {
           user: {
@@ -73,6 +80,7 @@ resource 'Users' do
       let(:bitcoin_wallet_id) { SecureRandom.uuid }
 
       example 'Update a user' do
+        sign_in(:administrator)
 
         request = {
           user: {
@@ -85,7 +93,7 @@ resource 'Users' do
           user.reload
         }.to change { user.bitcoin_wallet_id }.to(bitcoin_wallet_id)
 
-        expect(status).to eq(204)
+        expect(status).to eq(202)
       end
     end
   end

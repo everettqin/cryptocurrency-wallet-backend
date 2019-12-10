@@ -31,6 +31,7 @@ class Transaction < ApplicationRecord
   alias identifier id
   has_paper_trail
   enumerize :currency_type, in: [:bitcoin, :ethereum]
+  has_paper_trail on: []
 
   ## Associations
   belongs_to :source_user, class_name: 'User'
@@ -55,6 +56,8 @@ class Transaction < ApplicationRecord
   aasm column: :state do
     state :awaiting, initial: true
     state :processing, :processed, :failed
+
+    before_all_events :log_state
 
     event :process_begin do
       transitions from: :awaiting, to: :processing, after: :add_to_process_queue
@@ -123,6 +126,10 @@ class Transaction < ApplicationRecord
   end
 
   private
+
+  def log_state
+    self.paper_trail_event = aasm.current_event
+  end
 
   def add_to_process_queue
     TransactionsProcessJob.perform_later self

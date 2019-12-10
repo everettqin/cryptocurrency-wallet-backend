@@ -18,8 +18,13 @@ class TransactionsController < APIController
   end
 
   def create
-    @transaction = Transaction.create(transaction_params)
-    respond_with @transaction
+    @transaction = Transaction.new transaction_params
+
+    if @transaction.save
+      render json: TransactionBlueprint.render(@transaction, root: :data), status: :created
+    else
+      render json: @transaction.errors, status: :unprocessable_entity
+    end
   end
 
   private

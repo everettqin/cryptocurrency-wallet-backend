@@ -29,7 +29,7 @@ class User < ApplicationRecord
   has_paper_trail
 
   ## Validates
-  validates :name, presence: true, length: {maximum: 512}, uniqueness: true
+  validates :name, presence: true, length: {maximum: 512}
   validates :description, length: {maximum: 1000}
   validates :email, presence: true, length: {maximum: 1000}, email: true, uniqueness: true # accord to maximum specified in RFC 5321 states,  is 256 characters.
   validates :bitcoin_wallet_id, length: {maximum: 512}
