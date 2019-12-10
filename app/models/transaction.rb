@@ -31,6 +31,7 @@ class Transaction < ApplicationRecord
   alias identifier id
   has_paper_trail
   enumerize :currency_type, in: [:bitcoin, :ethereum]
+  has_paper_trail on: []
 
   ## Associations
   belongs_to :source_user, class_name: 'User'
@@ -39,26 +40,31 @@ class Transaction < ApplicationRecord
   ## Validations
   validates :amount, presence: true, numericality: {greater_than: 0}
   validates :currency_type, presence: true
-  validate :validate_unequal_user,
-           :validate_enough_balance,
-           :validate_existed_source_user_wallet,
-           :validate_existed_target_user_wallet,
+  validate :validates_unequal_user,
+           :validates_source_user_wallet,
+           :validates_target_user_wallet,
+           :validates_enough_balance,
            unless: -> { source_user.nil? || target_user.nil? || amount.nil? || currency_type.nil? }
 
   ## Callbacks
-  after_create :process_begin
+  after_create :process_begin!
+
+  ## Scopes
+  scope :by_user, ->(user_id) { where(source_user_id: user_id).or(where(target_user_id: user_id)) }
 
   ## state machine
   aasm column: :state do
     state :awaiting, initial: true
     state :processing, :processed, :failed
 
+    before_all_events :log_state
+
     event :process_begin do
       transitions from: :awaiting, to: :processing, after: :add_to_process_queue
     end
 
     event :process_successful do
-      transitions from: :processing, to: :processed
+      transitions from: :processing, to: :processed, after: :add_processed_at!
     end
 
     event :process_failure do
@@ -83,37 +89,49 @@ class Transaction < ApplicationRecord
     end
   end
 
-  private
-
-  def add_to_process_queue
-    TransactionsProcessJob.perform_later self
+  def add_processed_at!
+    update_attribute :processed_at, Time.now
   end
 
-  def validate_unequal_user
+  def validates_unequal_user
     if source_user_id == target_user_id
       errors.add(:target_user_id, "can't be same with source user id")
     end
+    true
   end
 
-  def validate_existed_source_user_wallet
+  def validates_source_user_wallet
     source_user_wallet = source_user.attributes["#{currency_type}_wallet_id"]
     if source_user_wallet.nil?
       errors.add(:source_user, "have not #{currency_type} wallet")
     end
+    true
   end
 
-  def validate_existed_target_user_wallet
+  def validates_target_user_wallet
     target_user_wallet = target_user.attributes["#{currency_type}_wallet_id"]
     if target_user_wallet.nil?
       errors.add(:target_user, "have not #{currency_type} wallet")
     end
+    true
   end
 
-  def validate_enough_balance
+  def validates_enough_balance
     current_balance = source_user.attributes["#{currency_type}_wallet_balance"]
     if amount > current_balance
       errors.add(:amount,
                  "can't be greater than current #{currency_type} wallet balance")
     end
+    true
+  end
+
+  private
+
+  def log_state
+    self.paper_trail_event = aasm.current_event
+  end
+
+  def add_to_process_queue
+    TransactionsProcessJob.perform_later self
   end
 end

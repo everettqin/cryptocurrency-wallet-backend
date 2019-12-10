@@ -24,12 +24,12 @@
 
 class User < ApplicationRecord
 
-  # Settings
+  ## Settings
   alias identifier id
   has_paper_trail
 
-  # Validates
-  validates :name, presence: true, length: {maximum: 512}, uniqueness: true
+  ## Validates
+  validates :name, presence: true, length: {maximum: 512}
   validates :description, length: {maximum: 1000}
   validates :email, presence: true, length: {maximum: 1000}, email: true, uniqueness: true # accord to maximum specified in RFC 5321 states,  is 256 characters.
   validates :bitcoin_wallet_id, length: {maximum: 512}
@@ -38,6 +38,7 @@ class User < ApplicationRecord
   validates :ethereum_wallet_balance, length: {maximum: 1_000_000_000_000}
 
 
-  # Scopes
+  ## Scopes
   scope :search, ->(query) { where('name ILIKE ?', "%#{query}%") unless query.nil? or query.length < 2 }
+
 end

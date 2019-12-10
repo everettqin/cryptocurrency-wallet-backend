@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.6.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.0'
+gem 'rails', '6.0.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
@@ -89,6 +89,12 @@ gem 'oj'
 gem 'responders', '~> 3.0.0'
 # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator for Ruby webapps
 gem 'kaminari','~> 1.1.1'
+
+## Auth
+# Flexible authentication solution for Rails with Warden.
+gem 'devise', '~> 4.7.1'
+# Token based authentication for Rails JSON APIs. Designed to work with jToker and ng-token-auth.
+gem 'devise_token_auth', '~> 1.1.3'
 
 ## Others
 # An email validator for Rails

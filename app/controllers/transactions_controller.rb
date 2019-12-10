@@ -1,9 +1,13 @@
-class TransactionsController < ApplicationController
+class TransactionsController < APIController
 
-  before_action :set_transaction, only: [:show]
+  before_action :set_transaction, only: [:show, :history]
 
   def index
-    @transactions = Transaction.page page_params
+    @transactions = Transaction
+    unless params[:user_id].nil?
+      @transactions = @transactions.by_user(params[:user_id])
+    end
+    @transactions = @transactions.order(created_at: :desc).page page_params
     render json: TransactionBlueprint.render(@transactions,
                                              root: :data,
                                              meta: pagination_dict(@transactions))
@@ -14,8 +18,13 @@ class TransactionsController < ApplicationController
   end
 
   def create
-    @transaction = Transaction.create(transaction_params)
-    respond_with @transaction
+    @transaction = Transaction.new transaction_params
+
+    if @transaction.save
+      render json: TransactionBlueprint.render(@transaction, root: :data), status: :created
+    else
+      render json: @transaction.errors, status: :unprocessable_entity
+    end
   end
 
   private

@@ -9,4 +9,5 @@ class TransactionBlueprint < BaseBlueprint
 
   association :source_user, blueprint: UserBlueprint
   association :target_user, blueprint: UserBlueprint
+  association :versions, blueprint: VersionBlueprint
 end
