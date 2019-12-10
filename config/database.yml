@@ -26,3 +26,11 @@ production:
   username: <%= ENV["CCW_DATABASE_PRODUCT_USER"]%>
   password: <%= ENV["CCW_DATABASE_PRODUCT_PASSWORD"]%>
   host:     <%= ENV["CCW_DATABASE_PRODUCT_HOST"]%>
+
+
+demo:
+  <<: *default
+  database: <%= ENV["CCW_DATABASE_DEMO_DB"]%>
+  username: <%= ENV["CCW_DATABASE_DEMO_USER"]%>
+  password: <%= ENV["CCW_DATABASE_DEMO_PASSWORD"]%>
+  host:     <%= ENV["CCW_DATABASE_DEMO_HOST"]%>
