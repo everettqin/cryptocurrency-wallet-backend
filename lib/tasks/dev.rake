@@ -18,11 +18,11 @@ namespace :dev do
   task :build => @build_tasks
   task :rebuild => @rebuild_tasks
 
-  task :clear_uploads do
+  task clear_uploads: :environment  do
     FileUtils.rm_rf(Dir.glob("#{Rails.root}/storage"))
   end
 
-  task :clear_sidekiq do
+  task clear_sidekiq: :environment do
     Sidekiq.redis { |r| puts r.flushall }
   end
 end

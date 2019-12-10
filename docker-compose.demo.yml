@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    command: bash -c "rm -f /rails/tmp/pids/server.pid && bundle exec rake db:migrate && bundle exec puma -C config/puma.rb"
+    environment:
+      RAILS_ENV: demo
+    depends_on:
+      - db
+      - redis
+    ports:
+      - 3000:3000
+    links:
+      - db
+      - redis
+
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web/Dockerfile
+    depends_on:
+      - app
+    ports:
+      - 80:80
+
+  db:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: 12345678
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+#  sidekiq:
+#    depends_on:
+#      - db
+#      - redis
+#    build: .
+#    command: sidekiq
+#    volumes:
+#      - .:/app
+#    environment:
+#      REDIS_URL: redis://redis:6379/0
+
+  redis:
+    image: redis:4.0.9-alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/var/lib/redis/data
+
+
+volumes:
+  db-data:
+  redis-data:

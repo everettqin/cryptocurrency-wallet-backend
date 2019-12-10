@@ -25,13 +25,9 @@ gem 'bootsnap', '>= 1.4.2', require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 
-group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+group :development, :test, :demo do
   # A library for generating fake data such as names, addresses, and phone numbers.
   gem 'faker', '~> 2.7'
-  # RSpec for Rails-3+
-  gem 'rspec-rails', '~> 3.9.0'
   # A gem providing "time travel", "time freezing", and "time acceleration"
   # capabilities, making it simple to test time-dependent code. It provides
   # a unified method to mock Time.now, Date.today, and DateTime.now in a single call.
@@ -40,6 +36,16 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 5.1.0'
   # A Ruby gem to load environment variables from `.env`.
   gem 'dotenv-rails', '~> 2.7.0'
+  # Seedbank gives your seed data a little structure.
+  gem 'seedbank', '~> 0.5.0'
+end
+
+
+group :development, :test do
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  # RSpec for Rails-3+
+  gem 'rspec-rails', '~> 3.9.0'
   # help to kill N+1 queries and unused eager loading
   gem 'bullet', '~> 6.0.0'
 end
@@ -51,8 +57,6 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # Annotate Rails classes with schema and routes info
   gem 'annotate', '~> 3.0.0'
-  # Seedbank gives your seed data a little structure.
-  gem 'seedbank', '~> 0.5.0'
 end
 
 group :test do
