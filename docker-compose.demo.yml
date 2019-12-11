@@ -36,16 +36,18 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
-#  sidekiq:
-#    depends_on:
-#      - db
-#      - redis
-#    build: .
-#    command: sidekiq
-#    volumes:
-#      - .:/app
-#    environment:
-#      REDIS_URL: redis://redis:6379/0
+  sidekiq:
+    depends_on:
+      - db
+      - redis
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    command: bundle exec sidekiq
+    volumes:
+      - .:/app
+    environment:
+      REDIS_URL: redis://redis:6379/0
 
   redis:
     image: redis:4.0.9-alpine
