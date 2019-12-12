@@ -1,6 +1,6 @@
 class TransactionsController < APIController
 
-  before_action :set_transaction, only: [:show, :history]
+  before_action :set_transaction, only: [:show]
 
   def index
     @transactions = Transaction
