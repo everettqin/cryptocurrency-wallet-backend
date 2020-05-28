@@ -92,7 +92,7 @@ gem 'oj'
 # A set of Rails responders to dry up your application
 gem 'responders', '~> 3.0.0'
 # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator for Ruby webapps
-gem 'kaminari','~> 1.1.1'
+gem 'kaminari','~> 1.2.1'
 
 ## Auth
 # Flexible authentication solution for Rails with Warden.
