@@ -78,7 +78,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 ## Background jobs
 # Simple, efficient background processing for Ruby
-gem 'sidekiq', '~> 6.0.3'
+gem 'sidekiq', '~> 6.2.1'
 
 ## State machines
 # State machines for Ruby classes (plain Ruby, ActiveRecord, Mongoid)
